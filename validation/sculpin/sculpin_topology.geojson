@@ -1,0 +1,339 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -134.643,
+          58.382
+        ]
+      },
+      "properties": {
+        "name": "Alaska"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.832,
+          49.03
+        ]
+      },
+      "properties": {
+        "name": "LittleCampbell"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -129.3,
+          56.1
+        ]
+      },
+      "properties": {
+        "name": "Meziadin"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04,
+          54.99
+        ]
+      },
+      "properties": {
+        "name": "McLeod"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.55,
+          49.972
+        ]
+      },
+      "properties": {
+        "name": "Okanagan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -120.85,
+          56.241
+        ]
+      },
+      "properties": {
+        "name": "PeaceBC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -117.337,
+          56.235
+        ]
+      },
+      "properties": {
+        "name": "PeaceAB"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -126.78,
+          52.374
+        ]
+      },
+      "properties": {
+        "name": "BellaCoola"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.8,
+          49.55
+        ]
+      },
+      "properties": {
+        "name": "Harrison"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -128.547,
+          54.357
+        ]
+      },
+      "properties": {
+        "name": "Lakelse"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -125.155,
+          52.342
+        ]
+      },
+      "properties": {
+        "name": "Nimpo"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -131.94,
+          53.55
+        ]
+      },
+      "properties": {
+        "name": "Tlell"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -132.3,
+          53.27
+        ]
+      },
+      "properties": {
+        "name": "Mosquito"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -132.0,
+          53.5
+        ]
+      },
+      "properties": {
+        "name": "MAL"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -132.0,
+          53.5
+        ]
+      },
+      "properties": {
+        "name": "MALout"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.5,
+          49.5
+        ]
+      },
+      "properties": {
+        "name": "FallsCreek"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -131.94,
+            53.55
+          ],
+          [
+            -132.0062500000001,
+            53.51874999999925
+          ],
+          [
+            -131.9937500000001,
+            53.531249999999226
+          ],
+          [
+            -131.9937500000001,
+            53.53541666666589
+          ],
+          [
+            -131.98958333333343,
+            53.53958333333258
+          ],
+          [
+            -131.98541666666674,
+            53.53958333333258
+          ],
+          [
+            -131.98125000000007,
+            53.54374999999924
+          ],
+          [
+            -131.96875000000006,
+            53.54374999999924
+          ],
+          [
+            -131.9645833333334,
+            53.547916666665905
+          ],
+          [
+            -131.96041666666673,
+            53.547916666665905
+          ],
+          [
+            -131.9562500000001,
+            53.552083333332554
+          ],
+          [
+            -131.95208333333343,
+            53.552083333332554
+          ],
+          [
+            -132.0,
+            53.5
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Tlell_to_MAL"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -131.94,
+            53.55
+          ],
+          [
+            -132.0062500000001,
+            53.51874999999925
+          ],
+          [
+            -131.9937500000001,
+            53.531249999999226
+          ],
+          [
+            -131.9937500000001,
+            53.53541666666589
+          ],
+          [
+            -131.98958333333343,
+            53.53958333333258
+          ],
+          [
+            -131.98541666666674,
+            53.53958333333258
+          ],
+          [
+            -131.98125000000007,
+            53.54374999999924
+          ],
+          [
+            -131.96875000000006,
+            53.54374999999924
+          ],
+          [
+            -131.9645833333334,
+            53.547916666665905
+          ],
+          [
+            -131.96041666666673,
+            53.547916666665905
+          ],
+          [
+            -131.9562500000001,
+            53.552083333332554
+          ],
+          [
+            -131.95208333333343,
+            53.552083333332554
+          ],
+          [
+            -132.0,
+            53.5
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Tlell_to_MALout"
+      }
+    }
+  ]
+}
