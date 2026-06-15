@@ -60,13 +60,12 @@ pixi run python -m $SCULPIN/parse_genepop \
   --out_microsat     out/sculpin/inputs/sculpin_microsat.tsv \
   --out_sample_data  out/sculpin/inputs/sample_data.txt
 
-# 2. LOSO sweep with the location-masking penalty (dosage mode)
+# 2. LOSO sweep with the location-masking penalty (dosage mode, native --microsat loader)
 pixi run python -m validation.sculpin.run_loso_rangemask \
   --microsat        out/sculpin/inputs/sculpin_microsat.tsv \
   --sample_data     out/sculpin/inputs/sample_data.txt \
   --range_shp       $SHP \
   --out_dir         out/sculpin/loso_rangemask \
-  --mode            dosage \
   --max_epochs      500
 
 # 3. Summary table + sculpin_summary.md + sculpin_loso.tsv
@@ -128,4 +127,4 @@ Quantitative summaries:
 ## Known limitations
 
 - **`run_loso.py` is currently broken** (calls the deleted `scripts/microsat_to_locator.py` to compute geometry / repeat_norm features). The dosage mode of the model comparison is still reproducible via `run_loso_rangemask.py --mode dosage`, but the full 3-mode comparison that produced `sculpin_modes.png` requires resurrecting `microsat_to_locator.py` (e.g., `git show archive/microsat-sculpin-pre-rebuild:scripts/microsat_to_locator.py > scripts/microsat_to_locator.py`) or porting the geometry / repeat_norm encoders out of the legacy script. Geometry and repeat_norm were ruled out for merge in the sculpin LOSO comparison anyway (dosage 237 km median << geometry 404 km << repeat_norm 395 km), so this gap mostly matters for historical reproducibility, not new scientific output.
-- **`run_loso_rangemask.py`** still expects a pre-computed `--feature-matrix` TSV in the legacy path. A small rewire to call `loc.load_genotypes(microsat=...)` directly would close that gap. Pending follow-up — say the word and I'll do it.
+- **`run_loso_rangemask.py`** uses the native `--microsat` loader directly (one `loc.load_genotypes(microsat=...)` call per fold; no intermediate feature-matrix TSV). Dosage is the only encoding supported — geometry/repeat_norm were ruled out for merge per the sculpin LOSO comparison and live as branch-only experimental record on the `microsatellites` branch.

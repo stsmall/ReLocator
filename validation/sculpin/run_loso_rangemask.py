@@ -15,9 +15,12 @@ freshwater (2D polygon mask) instead of coastline (1D + buffer):
     ``use_range_penalty=True`` and a fold-specific
     ``species_range_shapefile`` — the CLI doesn't expose these flags.
 
-Single mode by default: ``dosage`` (the empirical winner of the unmasked
-sweep). Pass ``--mode geometry`` or ``--mode repeat_norm`` to test those
-under range mask too.
+Loads microsat genotypes through ReLocator's native ``--microsat`` path
+(PR #46): one call to ``loc.load_genotypes(microsat=...)`` per fold, no
+intermediate feature-matrix TSV. Dosage encoding is the only supported
+mode here (geometry / repeat_norm modes were ruled out for merge by the
+sculpin LOSO comparison and live on the ``microsatellites`` branch as
+branch-only experimental record).
 
 See ``validation/notes/range_mask_bug.md`` for why the z-score-space
 transformation is necessary (upstream coord-space bug in
@@ -40,7 +43,6 @@ import shapely.geometry
 
 from validation import common  # noqa: E402
 
-USER_MODES = ("dosage", "geometry", "repeat_norm")
 NORMALIZED_RESOLUTION = 0.01
 DEFAULT_PENALTY_WEIGHT = 50.0
 
@@ -64,8 +66,10 @@ def fold_normalization_params(
 
 def normalize_polygon(
     polygon: shapely.geometry.base.BaseGeometry,
-    mean_lon: float, sd_lon: float,
-    mean_lat: float, sd_lat: float,
+    mean_lon: float,
+    sd_lon: float,
+    mean_lat: float,
+    sd_lat: float,
 ) -> shapely.geometry.base.BaseGeometry:
     """Apply z-score transform x' = (x - mean) / sd to polygon coords.
 
@@ -75,8 +79,7 @@ def normalize_polygon(
     """
     return shapely.affinity.affine_transform(
         polygon,
-        [1.0 / sd_lon, 0.0, 0.0, 1.0 / sd_lat,
-         -mean_lon / sd_lon, -mean_lat / sd_lat],
+        [1.0 / sd_lon, 0.0, 0.0, 1.0 / sd_lat, -mean_lon / sd_lon, -mean_lat / sd_lat],
     )
 
 
@@ -117,7 +120,7 @@ def write_holdout_sample_data(
 def _run_one_fold_inproc(
     *,
     site: str,
-    feature_matrix_path: Path,
+    microsat_path: Path,
     sample_data_in: Path,
     range_polygon: shapely.geometry.base.BaseGeometry,
     out_dir: Path,
@@ -131,7 +134,9 @@ def _run_one_fold_inproc(
 
     sd_path = fold_dir / "sample_data.txt"
     truth, held_out_ids, held_sd = write_holdout_sample_data(
-        sample_data_in, site, sd_path,
+        sample_data_in,
+        site,
+        sd_path,
     )
 
     mean_lon, sd_lon, mean_lat, sd_lat = fold_normalization_params(held_sd)
@@ -157,7 +162,7 @@ def _run_one_fold_inproc(
 
         config = {
             "out": str(out_prefix),
-            "matrix": str(feature_matrix_path),
+            "microsat": str(microsat_path),
             "sample_data": str(sd_path),
             "max_epochs": max_epochs,
             "patience": 30,
@@ -169,7 +174,7 @@ def _run_one_fold_inproc(
             "penalty_weight": penalty_weight,
         }
         loc = Locator(config=config)
-        genotypes, samples = loc.load_genotypes(matrix=str(feature_matrix_path))
+        genotypes, samples = loc.load_genotypes(microsat=str(microsat_path))
         loc.train(genotypes=genotypes, samples=samples)
         loc.predict(genotypes=genotypes, samples=samples)
     except Exception as exc:
@@ -231,15 +236,26 @@ def _run_one_fold_inproc(
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument("--microsat", required=True, type=Path,
-                   help="Pair-format microsat TSV (output of parse_genepop.py).")
-    p.add_argument("--sample_data", required=True, type=Path,
-                   help="ReLocator sample_data.txt (truth coords).")
-    p.add_argument("--range_shp", required=True, type=Path,
-                   help="Freshwater range polygon (output of build_range.py).")
+    p.add_argument(
+        "--microsat",
+        required=True,
+        type=Path,
+        help="Pair-format microsat TSV (output of parse_genepop.py). "
+        "Loaded per fold via loc.load_genotypes(microsat=...).",
+    )
+    p.add_argument(
+        "--sample_data",
+        required=True,
+        type=Path,
+        help="ReLocator sample_data.txt (truth coords).",
+    )
+    p.add_argument(
+        "--range_shp",
+        required=True,
+        type=Path,
+        help="Freshwater range polygon (output of build_range.py).",
+    )
     p.add_argument("--out_dir", required=True, type=Path)
-    p.add_argument("--mode", default="dosage", choices=USER_MODES,
-                   help="Encoding mode to run (single mode per invocation).")
     p.add_argument("--gpu", type=int, default=0)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_epochs", type=int, default=500)
@@ -256,36 +272,23 @@ def main() -> int:
     range_polygon = range_gdf.geometry.iloc[0]
     print(f"  polygon area ≈ {range_polygon.area:.2f} sq.deg", flush=True)
 
-    feat = args.out_dir / f"features_{args.mode}.tsv"
-    if not feat.exists():
-        cmd = [
-            sys.executable,
-            str(Path(__file__).resolve().parent.parent.parent / "scripts/microsat_to_locator.py"),
-            "--microsat", str(args.microsat),
-            "--out", str(feat),
-            "--features", args.mode,
-        ]
-        rc, _ = common.stream_run(cmd, feat.with_suffix(".buildlog"),
-                                  stage=f"build_{args.mode}")
-        if rc != 0:
-            print(f"build_features failed rc={rc}", file=sys.stderr)
-            return rc
-
     sd_df = pd.read_csv(args.sample_data, sep="\t")
     sites = sorted(set(sd_df["sampleID"].apply(site_of)))
     print(f"Sites: {len(sites)} → {sites}", flush=True)
 
-    rangemask_dir = args.out_dir / "loso_rangemask" / args.mode
+    rangemask_dir = args.out_dir / "loso_rangemask" / "dosage"
 
-    print(f"Starting {len(sites)} folds with use_range_penalty=True "
-          f"(weight={args.penalty_weight}, mode={args.mode}, gpu={args.gpu})",
-          flush=True)
+    print(
+        f"Starting {len(sites)} folds with use_range_penalty=True "
+        f"(weight={args.penalty_weight}, mode=dosage, gpu={args.gpu})",
+        flush=True,
+    )
     t_sweep = time.time()
     for idx, site in enumerate(sites):
         print(f"\n=== fold {idx + 1}/{len(sites)}: {site} ===", flush=True)
         _run_one_fold_inproc(
             site=site,
-            feature_matrix_path=feat,
+            microsat_path=args.microsat,
             sample_data_in=args.sample_data,
             range_polygon=range_polygon,
             out_dir=rangemask_dir,
