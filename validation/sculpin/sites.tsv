@@ -1,0 +1,17 @@
+site	lat	lon	confidence	note
+Alaska	58.382	-134.643	high	Auke Creek, near Juneau, AK
+LittleCampbell	49.030	-122.832	high	Little Campbell River, Surrey/Langley BC near US border
+Meziadin	56.100	-129.300	high	Meziadin Lake, northern BC
+McLeod	54.990	-123.040	high	McLeod Lake, central BC
+Okanagan	49.972	-119.550	high	Okanagan Lake, southern interior BC (south end)
+PeaceBC	56.241	-120.850	high	Peace River, BC (Hudson's Hope area)
+PeaceAB	56.235	-117.337	high	Peace River, AB (river crossing at Peace River town; nudged ~3 km W of town centroid to lie on river)
+BellaCoola	52.374	-126.780	high	Bella Coola River, central coast BC
+Harrison	49.550	-121.800	high	Harrison Lake, southwestern BC (south end)
+Lakelse	54.357	-128.547	high	Lakelse Lake, near Terrace BC
+Nimpo	52.342	-125.155	high	Nimpo Lake, Chilcotin Plateau BC
+Tlell	53.550	-131.940	medium	Tlell River, Haida Gwaii (Graham Island)
+Mosquito	53.270	-132.300	low	likely Haida Gwaii based on paper site list — VERIFY
+MAL	53.500	-132.000	low	Martins Lake; multiple in BC, likely Haida Gwaii — VERIFY
+MALout	53.500	-132.000	low	Martins Lake outlet; same locality as MAL — VERIFY
+FallsCreek	49.500	-123.500	low	multiple Falls Creeks in BC; coastal context likely — VERIFY
